@@ -27,6 +27,8 @@ class ListingFactory extends Factory
         ['Balcony', 'Wifi', 'Kitchen', 'Parking', 'Elevator', 'CCTV Camera'],
         $this->faker->numberBetween(2, 5),
       ),
+      'bedrooms' => $this->faker->numberBetween(0, 2),
+      'bathrooms' => $this->faker->numberBetween(0, 2),
     ];
   }
 }

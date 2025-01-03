@@ -22,6 +22,8 @@ return new class extends Migration {
       $table->decimal('longitude', 11, 8)->nullable();
       $table->longText('images')->nullable();
       $table->longText('features')->nullable();
+      $table->integer('bedrooms')->default(0);
+			$table->integer('bathrooms')->default(0);
       $table->softDeletes();
       $table->timestamps();
     });

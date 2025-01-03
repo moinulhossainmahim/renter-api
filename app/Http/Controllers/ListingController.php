@@ -8,7 +8,6 @@ use App\Http\Requests\Listing\ListingListRequest;
 use App\Http\Requests\Listing\ListingStoreRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ListingController extends Controller
 {
@@ -17,9 +16,7 @@ class ListingController extends Controller
    */
   public function index(ListingListRequest $request): JsonResponse
   {
-    $user = $request->user();
-
-    $listings = Listing::where('user_id', $user?->id)->paginate(
+    $listings = Listing::paginate(
       $request->validated('per_page', 10),
       $request->validated('columns', ['*']),
     );

@@ -24,8 +24,8 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'listing'], function () {
+  Route::get('list', [ListingController::class, 'index']);
     Route::middleware('authenticate')->group(function () {
-      Route::get('list', [ListingController::class, 'index']);
       Route::post('store', [ListingController::class, 'store']);
       Route::group(['prefix' => '{listing}'], function () {
         Route::delete('delete', [ListingController::class, 'destroy']);
@@ -34,8 +34,8 @@ Route::group(['prefix' => 'listing'], function () {
 });
 
 Route::group(['prefix' => 'wishlist'], function () {
+  Route::get('list', [WishlistController::class, 'index']);
   Route::middleware('authenticate')->group(function () {
-    Route::get('list', [WishlistController::class, 'index']);
     Route::post('store', [WishlistController::class, 'store']);
     Route::group(['prefix' => '{wishlist}'], function () {
       Route::post('delete', [WishlistController::class, 'destroy']);
