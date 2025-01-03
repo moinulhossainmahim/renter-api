@@ -56,11 +56,6 @@ class ListingController extends Controller
         $request->validated('columns', ['*']),
       );
 
-    // $listings->transform(function ($listing) {
-    //   $listing->images = array_map(fn($path) => asset("storage/$path"), $listing->images ?? []);
-    //   return $listing;
-    // });
-
     return response()->json([
       'data' => [
         'listings' => $listings,
@@ -88,7 +83,7 @@ class ListingController extends Controller
       ...$request
         ->safe()
         ->merge([
-          'images' => $imagePaths,
+          'images' => array_map(fn($path) => asset("storage/$path"), $imagePaths),
         ])
         ->all(),
     ]);

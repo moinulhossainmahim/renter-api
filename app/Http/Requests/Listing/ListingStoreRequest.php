@@ -21,6 +21,8 @@ class ListingStoreRequest extends FormRequest
       'images.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
       'features' => 'required|array',
       'features.*' => 'string|max:20|regex:/^[a-zA-Z\s\-]+$/',
+      'bedrooms' => 'required|integer|min:1|max:10',
+      'bathrooms' => 'required|integer|min:1|max:10',
     ];
   }
 }
