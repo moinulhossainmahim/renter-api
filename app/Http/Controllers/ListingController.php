@@ -97,6 +97,22 @@ class ListingController extends Controller
   }
 
   /**
+   * Show a listing.
+   */
+
+   public function show(Listing $listing): JsonResponse
+   {
+      $listing->load('user');
+
+      return response()->json([
+        'data' => [
+          'listing' => $listing,
+        ],
+        'message' => 'Listing show successful.',
+      ]);
+   }
+
+  /**
    * Delete a listing for the authenticated user.
    */
   public function destroy(Request $request, Listing $listing): JsonResponse

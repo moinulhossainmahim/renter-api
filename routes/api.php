@@ -25,6 +25,9 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix' => 'listing'], function () {
   Route::get('list', [ListingController::class, 'index']);
+  Route::group(['prefix' => '{listing}'], function () {
+    Route::get('show', [ListingController::class, 'show']);
+  });
     Route::middleware('authenticate')->group(function () {
       Route::post('store', [ListingController::class, 'store']);
       Route::group(['prefix' => '{listing}'], function () {
