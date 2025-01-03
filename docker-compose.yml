@@ -1,0 +1,79 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: renter-nginx
+    ports:
+      - '8000:80'
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html
+    depends_on:
+      - renter-api
+    networks:
+      - renter-network
+
+  renter-mysql:
+    image: mysql:8.4
+    container_name: renter-mysql
+    environment:
+      MYSQL_DATABASE: renter-mysql
+      MYSQL_ROOT_PASSWORD: secret
+    healthcheck:
+      interval: 5s
+      retries: 10
+      test: mysql -e 'SELECT 1;' -p${MYSQL_ROOT_PASSWORD:-secret} -uroot
+    ports:
+      - '3306:3306'
+    platform: linux/x86_64
+    volumes:
+      - renter-mysql:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - renter-network
+
+  renter-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: renter-api
+    depends_on:
+      renter-mysql:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    networks:
+      - renter-network
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - ./composer.json:/var/www/html/composer.json
+
+  renter-phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: renter-phpmyadmin
+    depends_on:
+      renter-mysql:
+        condition: service_healthy
+    environment:
+      PMA_HOST: renter-mysql
+      PMA_PASSWORD: secret
+      PMA_USER: root
+      UPLOAD_LIMIT: 2M
+    ports:
+      - '8002:80'
+    platform: linux/x86_64
+    restart: unless-stopped
+    networks:
+      - renter-network
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 100M
+
+volumes:
+  renter-mysql:
+
+networks:
+  renter-network:
