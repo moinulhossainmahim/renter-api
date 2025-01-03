@@ -23,6 +23,8 @@ class ListingListRequest extends FormRequest
     'latitude',
     'longitude',
     'images',
+    'bedrooms',
+    'bathrooms',
   ];
 
   protected function prepareForValidation(): void
@@ -37,11 +39,16 @@ class ListingListRequest extends FormRequest
   public function rules(): array
   {
     return [
+      'bathrooms' => 'nullable|integer|min:1|max:10',
+      'bedrooms' => 'nullable|integer|min:1|max:10',
       'columns' => 'nullable|array|min:1',
       'columns.*' =>
         'required|alpha_dash|distinct|in:' . join(',', $this->columns),
       'page' => 'nullable|integer|min:1',
+      'min_price' => 'nullable|integer|min:1|max:50000',
+      'max_price' => 'nullable|integer|min:1|max:50000|gte:min_price',
       'per_page' => 'nullable|integer|in:10,25,50,100',
+      'search' => 'nullable|string|min:1|max:10',
     ];
   }
 }

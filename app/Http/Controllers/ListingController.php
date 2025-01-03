@@ -6,25 +6,60 @@ use App\Http\Controllers\Controller;
 use App\Models\Listing;
 use App\Http\Requests\Listing\ListingListRequest;
 use App\Http\Requests\Listing\ListingStoreRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ListingController extends Controller
 {
-  /**
-   * List all listings for the authenticated user.
-   */
   public function index(ListingListRequest $request): JsonResponse
   {
-    $listings = Listing::paginate(
-      $request->validated('per_page', 10),
-      $request->validated('columns', ['*']),
-    );
+    $listings = Listing::query()
+      ->when($request->validated('search'), function (
+        Builder $query,
+        string $search,
+      ) {
+        $search = '%' . $search . '%';
 
-    $listings->transform(function ($listing) {
-      $listing->images = array_map(fn($path) => asset("storage/$path"), $listing->images ?? []);
-      return $listing;
-    });
+        $query->where(function (Builder $query) use ($search) {
+          $query
+            ->where('title', 'like', $search)
+            ->orWhere('description', 'like', $search);
+        });
+      })
+      ->when($request->validated('bedrooms'), function (
+        Builder $query,
+        int $bedrooms,
+      ) {
+        $query->where('bedrooms', $bedrooms);
+      })
+      ->when($request->validated('bathrooms'), function (
+        Builder $query,
+        int $bathrooms,
+      ) {
+        $query->where('bathrooms', $bathrooms);
+      })
+      ->when($request->validated('min_price'), function (
+        Builder $query,
+        int $minPrice,
+      ) {
+        $query->where('price', '>=', $minPrice);
+      })
+      ->when($request->validated('max_price'), function (
+        Builder $query,
+        int $maxPrice,
+      ) {
+        $query->where('price', '<=', $maxPrice);
+      })
+      ->paginate(
+        $request->validated('per_page', 10),
+        $request->validated('columns', ['*']),
+      );
+
+    // $listings->transform(function ($listing) {
+    //   $listing->images = array_map(fn($path) => asset("storage/$path"), $listing->images ?? []);
+    //   return $listing;
+    // });
 
     return response()->json([
       'data' => [

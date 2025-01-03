@@ -25,6 +25,8 @@ class Listing extends Model
     'longitude',
     'images',
     'features',
+    'bedrooms',
+    'bathrooms',
   ];
 
   protected function casts(): array
