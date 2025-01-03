@@ -24,7 +24,10 @@ class ListingController extends Controller
         $query->where(function (Builder $query) use ($search) {
           $query
             ->where('title', 'like', $search)
-            ->orWhere('description', 'like', $search);
+            ->orWhere('description', 'like', $search)
+            ->orWhere('city', 'like', $search)
+            ->orWhere('state', 'like', $search)
+            ->orWhere('country', 'like', $search);
         });
       })
       ->when($request->validated('bedrooms'), function (
