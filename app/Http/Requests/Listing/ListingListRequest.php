@@ -45,8 +45,8 @@ class ListingListRequest extends FormRequest
       'columns.*' =>
         'required|alpha_dash|distinct|in:' . join(',', $this->columns),
       'page' => 'nullable|integer|min:1',
-      'min_price' => 'nullable|integer|min:1|max:50000',
-      'max_price' => 'nullable|integer|min:1|max:50000|gte:min_price',
+      'min_price' => 'nullable|integer|min:1|max:100000',
+      'max_price' => 'nullable|integer|min:1|max:100000|gte:min_price',
       'per_page' => 'nullable|integer|in:10,25,50,100',
       'search' => 'nullable|string|min:1|max:10',
     ];
