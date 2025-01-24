@@ -60,7 +60,7 @@ services:
       PMA_USER: root
       UPLOAD_LIMIT: 2M
     ports:
-      - '8002:80'
+      - '8006:80'
     platform: linux/x86_64
     restart: unless-stopped
     networks:
